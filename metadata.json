@@ -1,0 +1,6 @@
+{
+  "name": "Academy Management System",
+  "description": "Full-stack Academy Management System with Student, Teacher, and Admin portals, Quizzes, Attendance, Fees, Support Tickets, and AI Student Support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
