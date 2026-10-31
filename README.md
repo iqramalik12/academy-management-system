@@ -183,6 +183,16 @@ npm run build
 npm start
 ```
 
+### 5. Deploy to Render (from GitHub)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/iqramalik12/academy-management-system)
+
+The repo includes a [`render.yaml`](render.yaml) blueprint. In Render choose **New → Blueprint**, connect this repository, and fill in:
+- `GEMINI_API_KEY` — optional, enables the AI chatbot
+- `MONGO_URI` — optional; without it the free instance uses the in-memory store, which resets on every restart/sleep
+
+Every push to `main` redeploys automatically.
+
 ---
 
 ## 🧪 Testing Checklist
