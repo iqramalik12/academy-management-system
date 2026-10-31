@@ -3,6 +3,8 @@ import { AuthProvider, useAuth } from './context/AuthContext.tsx';
 import { Navbar } from './components/Navbar.tsx';
 import { Sidebar } from './components/Sidebar.tsx';
 import { LoginPage } from './pages/LoginPage.tsx';
+import { ProfilePage } from './pages/ProfilePage.tsx';
+import { Bot, X } from 'lucide-react';
 
 // Admin Pages
 import { AdminDashboard } from './pages/admin/AdminDashboard.tsx';
@@ -34,6 +36,7 @@ const AppContent: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
   const [currentPath, setCurrentPath] = useState<string>('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Sync role-based default path
   useEffect(() => {
@@ -59,6 +62,11 @@ const AppContent: React.FC = () => {
   }
 
   const navigateTo = (path: string) => {
+    // AI support lives in the floating widget, not a page
+    if (path === '/student/ai-support') {
+      setIsChatOpen(true);
+      return;
+    }
     // Role protection: prevent accessing another role's pages
     if (!path.startsWith(`/${user.role}`)) {
       setCurrentPath(`/${user.role}`);
@@ -68,6 +76,10 @@ const AppContent: React.FC = () => {
   };
 
   const renderCurrentView = () => {
+    if (currentPath === `/${user.role}/profile`) {
+      return <ProfilePage />;
+    }
+
     // Admin Views
     if (user.role === 'admin') {
       switch (currentPath) {
@@ -119,8 +131,6 @@ const AppContent: React.FC = () => {
           return <StudentFees />;
         case '/student/quizzes':
           return <StudentQuizzes />;
-        case '/student/ai-support':
-          return <StudentAiSupport onNavigateToTickets={() => navigateTo('/student/tickets')} />;
         case '/student/tickets':
           return <StudentSupportTickets />;
         case '/student':
@@ -134,7 +144,10 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col text-slate-800">
-      <Navbar onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)} />
+      <Navbar
+        onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
+        onOpenProfile={() => navigateTo(`/${user.role}/profile`)}
+      />
       <div className="flex-1 flex overflow-hidden">
         <Sidebar
           isOpen={isSidebarOpen}
@@ -146,6 +159,32 @@ const AppContent: React.FC = () => {
           {renderCurrentView()}
         </main>
       </div>
+
+      {user.role === 'student' && (
+        <>
+          {/* Kept mounted while closed so the conversation survives toggling */}
+          <div
+            className={`fixed z-50 bottom-24 right-4 md:right-6 w-[calc(100vw-2rem)] sm:w-[380px] h-[min(560px,calc(100vh-8rem))] bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden ${
+              isChatOpen ? '' : 'hidden'
+            }`}
+          >
+            <StudentAiSupport
+              onClose={() => setIsChatOpen(false)}
+              onNavigateToTickets={() => {
+                setIsChatOpen(false);
+                navigateTo('/student/tickets');
+              }}
+            />
+          </div>
+          <button
+            onClick={() => setIsChatOpen((prev) => !prev)}
+            className="fixed z-50 bottom-6 right-4 md:right-6 w-14 h-14 rounded-full bg-gradient-to-tr from-indigo-600 to-blue-600 text-white shadow-lg hover:scale-105 transition-transform flex items-center justify-center"
+            title="AI Student Support"
+          >
+            {isChatOpen ? <X className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
+          </button>
+        </>
+      )}
     </div>
   );
 };

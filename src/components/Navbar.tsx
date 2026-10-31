@@ -4,9 +4,10 @@ import { GraduationCap, LogOut, Menu, User as UserIcon } from 'lucide-react';
 
 interface NavbarProps {
   onToggleSidebar: () => void;
+  onOpenProfile: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, onOpenProfile }) => {
   const { user, logout } = useAuth();
 
   const getRoleBadge = (role?: string) => {
@@ -47,7 +48,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
 
       <div className="flex items-center gap-3 md:gap-4">
         {user && (
-          <div className="flex items-center gap-3 pl-3 pr-2 py-1.5 rounded-xl border border-slate-100 bg-slate-50/60">
+          <button
+            onClick={onOpenProfile}
+            title="My Profile"
+            className="flex items-center gap-3 pl-3 pr-2 py-1.5 rounded-xl border border-slate-100 bg-slate-50/60 hover:bg-indigo-50 hover:border-indigo-200 transition-colors"
+          >
             <div className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700">
               <UserIcon className="w-4 h-4" />
             </div>
@@ -66,7 +71,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
                 {user.email}
               </span>
             </div>
-          </div>
+          </button>
         )}
 
         <button

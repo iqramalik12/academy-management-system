@@ -9,7 +9,7 @@ import {
   CalendarCheck,
   CreditCard,
   HelpCircle,
-  Bot,
+  UserCircle,
   MessageSquare,
   Award,
   X,
@@ -63,13 +63,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { name: 'My Attendance', path: '/student/attendance', icon: <CalendarCheck className="w-4 h-4" /> },
     { name: 'Fees & Invoices', path: '/student/fees', icon: <CreditCard className="w-4 h-4" /> },
     { name: 'Quizzes & Tests', path: '/student/quizzes', icon: <Award className="w-4 h-4" /> },
-    { name: 'AI Student Support', path: '/student/ai-support', icon: <Bot className="w-4 h-4" />, highlight: true },
     { name: 'Support Tickets', path: '/student/tickets', icon: <HelpCircle className="w-4 h-4" /> },
   ];
 
   let links = adminLinks;
   if (user.role === 'teacher') links = teacherLinks;
   if (user.role === 'student') links = studentLinks;
+  links = [...links, { name: 'My Profile', path: `/${user.role}/profile`, icon: <UserCircle className="w-4 h-4" /> }];
 
   const handleLinkClick = (path: string) => {
     onNavigate(path);
